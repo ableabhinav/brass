@@ -7,8 +7,8 @@
 //
 
 #import "MasterViewController.h"
-
 #import "DetailViewController.h"
+#import "AAPullToRefresh.h"
 
 @interface MasterViewController () {
     NSMutableArray *_objects;
@@ -30,6 +30,15 @@
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    AAPullToRefresh *pull = [self.tableView addPullToRefreshPosition:AAPullToRefreshPositionTop ActionHandler:^(AAPullToRefresh *v) {
+        [self insertNewObject:nil];
+        [v performSelector:@selector(stopIndicatorAnimation) withObject:nil afterDelay:1.0f];
+    }];
+    pull.bounds = CGRectMake(pull.bounds.origin.x, pull.bounds.origin.y - 25, pull.bounds.size.width, pull.bounds.size.height + 40);
 }
 
 - (void)didReceiveMemoryWarning
